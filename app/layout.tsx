@@ -23,6 +23,7 @@ const ibmPlexSans = IBM_Plex_Sans({
 export const metadata: Metadata = {
   title: "PPL Tracker",
   description: "Push Pull Legs workout tracker",
+  manifest: "./manifest.json",
 };
 
 export default function RootLayout({
