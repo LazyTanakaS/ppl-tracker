@@ -287,7 +287,46 @@ header {
 
 input[type="number"] {
   -moz-appearance: textfield;
-  appearance: texfield;
+  appearance: textfield;
+}
+
+/* RESET BUTTON */
+
+.rest-btn {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.rest-btn:hover {
+  border-color: var(--accent-legs);
+  color: var(--accent-legs);
+}
+
+.rest-btn.active {
+  border-color: var(--accent-legs);
+  color: var(--accent-legs);
+}
+
+/* TIMER */
+
+.timer-display {
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  color: var(--accent-legs);
+  letter-spacing: 2px;
+  padding: 8px 2px;
+  text-align: center;
 }
 
 .sets-label {
@@ -298,14 +337,14 @@ input[type="number"] {
   text-transform: uppercase;
   margin-bottom: 8px;
   display: grid;
-  grid-template-columns: 28px 1fr 1fr 1fr;
+  grid-template-columns: 28px 1fr 1fr 1fr auto;
   gap: 6px;
   padding: 0 2px;
 }
 
 .set-row {
   display: grid;
-  grid-template-columns: 28px 1fr 1fr 1fr;
+  grid-template-columns: 28px 1fr 1fr 1fr auto;
   gap: 6px;
   margin-bottom: 6px;
   align-items: center;

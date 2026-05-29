@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { DayType, Exercise, ExerciseState, WorkoutSet } from "../types";
+import { useRestTimer } from "../hooks/useRestTimer";
 
 interface ExerciseCardProps {
   day: DayType;
@@ -30,6 +31,7 @@ export default function ExerciseCard({
 }: ExerciseCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const isDone = exState?.done ?? false;
+  const { timeLeft, isRunning, start, stop } = useRestTimer(300);
 
   return (
     <div className={`exercise-card ${day}-card ${isDone ? "done" : ""}`}>
@@ -56,6 +58,13 @@ export default function ExerciseCard({
             <span>ПОВТ</span>
             <span>ЗАМЕТКА</span>
           </div>
+
+          {isRunning && timeLeft !== null && (
+            <div className="timer-display">
+              REST {Math.floor(timeLeft / 60)}:
+              {String(timeLeft % 60).padStart(2, "0")}
+            </div>
+          )}
 
           {Array.from({ length: exercise.sets }, (_, i) => (
             <div key={i} className="set-row">
@@ -94,6 +103,16 @@ export default function ExerciseCard({
               />
             </div>
           ))}
+
+          <button
+            className={`rest-btn ${isRunning ? "active" : ""}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              isRunning ? stop() : start();
+            }}
+          >
+            {isRunning ? "СТОП" : "REST"}
+          </button>
 
           <textarea
             className="notes-input"
