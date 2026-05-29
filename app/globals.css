@@ -475,6 +475,34 @@ input[type="number"] {
   color: var(--text);
 }
 
+/* SAVE Button */
+
+.save-btn {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px;
+  background: transparent;
+  border: 1px solid var(--accent-pull);
+  color: var(--accent-pull);
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.save-btn:hover {
+  background: rgba(0, 194, 255, 0.06);
+}
+
+.save-btn.saved {
+  border-color: var(--accent-legs);
+  color: var(--accent-legs);
+  background: rgba(0, 232, 122, 0.06);
+}
+
 /* Save indicator */
 .save-indicator {
   position: fixed;

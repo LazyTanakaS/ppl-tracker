@@ -1,6 +1,7 @@
 import type { DayType, Exercise, ExerciseState, WorkoutSet } from "../types";
 import ProgressBar from "./ProgressBar";
 import ExerciseCard from "./ExerciseCard";
+import { useState } from "react";
 
 interface DayPanelProps {
   day: DayType;
@@ -17,6 +18,7 @@ interface DayPanelProps {
   ) => void;
   onUpdateNotes: (day: DayType, exIdx: number, value: string) => void;
   onReset: (day: DayType) => void;
+  onSave: () => void;
 }
 
 export default function DayPanel({
@@ -28,8 +30,16 @@ export default function DayPanel({
   onUpdateSet,
   onUpdateNotes,
   onReset,
+  onSave,
 }: DayPanelProps) {
   const doneCount = exercises.filter((_, i) => workout[i]?.done).length;
+  const [saved, setSaved] = useState(false);
+
+  function handleSave() {
+    onSave();
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  }
 
   const MUSCLES = {
     push: "Грудь / Плечи / Трицепс",
@@ -61,6 +71,13 @@ export default function DayPanel({
 
       <button className="reset-btn" onClick={() => onReset(day)}>
         ↺ Сбросить день
+      </button>
+
+      <button
+        className={`save-btn ${saved ? "saved" : ""}`}
+        onClick={handleSave}
+      >
+        {saved ? "✓ Сохранено" : "↓ Сохранить сессию"}
       </button>
     </div>
   );
