@@ -59,18 +59,18 @@ header {
 /* Day tabs */
 .tabs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   margin-bottom: 28px;
 }
 
 .tab {
-  padding: 14px 8px;
+  padding: 12px 4px;
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text-dim);
   font-family: var(--font-bebas), sans-serif;
-  font-size: 22px;
+  font-size: 18px;
   letter-spacing: 2px;
   cursor: pointer;
   transition: all 0.15s;
@@ -125,12 +125,23 @@ header {
 
 .tab-sub {
   font-family: var(--font-sans), sans-serif;
-  font-size: 9px;
+  font-size: 8px;
   letter-spacing: 1px;
   display: block;
   margin-top: 2px;
   opacity: 0.6;
   text-transform: uppercase;
+}
+
+.tab.history.active {
+  color: var(--text);
+  border-color: var(--text-dim);
+  background: rgba(240, 240, 240, 0.04);
+}
+
+.tab.history.active::after {
+  background: var(--text);
+  transform: scaleX(1);
 }
 
 /* Day panel */
@@ -518,4 +529,51 @@ input[type="number"] {
 
 .save-indicator.show {
   opacity: 1;
+}
+
+/* HISTORY */
+
+.history-empty {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 32px 0;
+  letter-spacing: 1px;
+}
+
+.history-list {
+  margin-top: 8px;
+}
+
+.history-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+  padding: 12px 14px;
+}
+
+.history-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.history-day {
+  font-family: var(--font-bebas), sans-serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+.history-date {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.history-progress {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: var(--text-muted);
 }

@@ -1,14 +1,15 @@
 import { DayType } from "../types";
 
 interface DayTabsProps {
-  activeDay: DayType;
-  onSwitch: (day: DayType) => void;
+  activeDay: DayType | "history";
+  onSwitch: (day: DayType | "history") => void;
 }
 
 const TABS: { day: DayType; label: string; sub: string }[] = [
   { day: "push", label: "PUSH", sub: "Грудь · Плечи · Трицепс" },
   { day: "pull", label: "PULL", sub: "Спина · Бицепс" },
   { day: "legs", label: "LEGS", sub: "Ноги · Пресс" },
+  { day: "history" as const, label: "HIST", sub: "История" },
 ];
 
 export default function DayTabs({ activeDay, onSwitch }: DayTabsProps) {
