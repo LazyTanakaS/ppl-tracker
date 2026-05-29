@@ -49,55 +49,59 @@ export default function ExerciseCard({
       </div>
 
       <div className={`sets-area ${isOpen ? "open" : ""}`}>
-        <div className="sets-label">
-          <span>#</span>
-          <span>КГ</span>
-          <span>ПОВТ</span>
-          <span>ЗАМЕТКА</span>
-        </div>
-
-        {Array.from({ length: exercise.sets }, (_, i) => (
-          <div key={i} className="set-row">
-            <div className="set-num">{i + 1}</div>
-            <input
-              autoComplete="off"
-              type="number"
-              className="set-input"
-              placeholder="кг"
-              value={exState?.sets?.[i]?.kg ?? ""}
-              onChange={(e) => onUpdateSet(day, exIdx, i, "kg", e.target.value)}
-            />
-
-            <input
-              autoComplete="off"
-              type="number"
-              className="set-input"
-              placeholder={exercise.reps}
-              value={exState?.sets?.[i]?.reps ?? ""}
-              onChange={(e) =>
-                onUpdateSet(day, exIdx, i, "reps", e.target.value)
-              }
-            />
-
-            <input
-              autoComplete="off"
-              type="text"
-              className="set-input"
-              placeholder="-"
-              value={exState?.sets?.[i]?.note ?? ""}
-              onChange={(e) =>
-                onUpdateSet(day, exIdx, i, "note", e.target.value)
-              }
-            />
+        <div>
+          <div className="sets-label">
+            <span>#</span>
+            <span>КГ</span>
+            <span>ПОВТ</span>
+            <span>ЗАМЕТКА</span>
           </div>
-        ))}
 
-        <textarea
-          className="notes-input"
-          placeholder="Заметки по упражнению..."
-          value={exState?.notes ?? ""}
-          onChange={(e) => onUpdateNotes(day, exIdx, e.target.value)}
-        />
+          {Array.from({ length: exercise.sets }, (_, i) => (
+            <div key={i} className="set-row">
+              <div className="set-num">{i + 1}</div>
+              <input
+                autoComplete="off"
+                type="number"
+                className="set-input"
+                placeholder="кг"
+                value={exState?.sets?.[i]?.kg ?? ""}
+                onChange={(e) =>
+                  onUpdateSet(day, exIdx, i, "kg", e.target.value)
+                }
+              />
+
+              <input
+                autoComplete="off"
+                type="number"
+                className="set-input"
+                placeholder={exercise.reps}
+                value={exState?.sets?.[i]?.reps ?? ""}
+                onChange={(e) =>
+                  onUpdateSet(day, exIdx, i, "reps", e.target.value)
+                }
+              />
+
+              <input
+                autoComplete="off"
+                type="text"
+                className="set-input"
+                placeholder="-"
+                value={exState?.sets?.[i]?.note ?? ""}
+                onChange={(e) =>
+                  onUpdateSet(day, exIdx, i, "note", e.target.value)
+                }
+              />
+            </div>
+          ))}
+
+          <textarea
+            className="notes-input"
+            placeholder="Заметки по упражнению..."
+            value={exState?.notes ?? ""}
+            onChange={(e) => onUpdateNotes(day, exIdx, e.target.value)}
+          />
+        </div>
       </div>
     </div>
   );

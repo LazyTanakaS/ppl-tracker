@@ -268,12 +268,26 @@ header {
 
 /* Sets grid */
 .sets-area {
-  display: none;
-  padding: 0 14px 14px;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+  padding: 0 14px;
+  overflow: hidden;
 }
 
 .sets-area.open {
-  display: block;
+  grid-template-rows: 1fr;
+  padding-bottom: 14px;
+}
+
+.sets-area > div {
+  min-height: 0;
+  overflow: hidden;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: texfield;
 }
 
 .sets-label {
