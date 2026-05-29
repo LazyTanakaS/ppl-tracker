@@ -243,6 +243,10 @@ header {
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.3px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .exercise-meta {

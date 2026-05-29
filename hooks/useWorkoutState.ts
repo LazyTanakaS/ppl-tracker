@@ -4,18 +4,11 @@ import { useState, useEffect } from "react";
 import type { WorkoutState, DayType, WorkoutSet } from "@/types";
 
 export function useWorkoutState() {
-  const [workout, setWorkout] = useState<WorkoutState>({
-    push: {},
-    pull: {},
-    legs: {},
-  });
-
-  useEffect(() => {
+  const [workout, setWorkout] = useState<WorkoutState>(() => {
+    if (typeof window === "undefined") return { push: {}, pull: {}, legs: {} };
     const saved = localStorage.getItem("ppl_workout");
-    if (saved) {
-      setWorkout(JSON.parse(saved));
-    }
-  }, []);
+    return saved ? JSON.parse(saved) : { push: {}, pull: {}, legs: {} };
+  });
 
   useEffect(() => {
     localStorage.setItem("ppl_workout", JSON.stringify(workout));

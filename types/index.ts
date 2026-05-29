@@ -4,7 +4,7 @@ export type WorkoutSet = {
   note: string;
 };
 
-export type ExerciseStats = {
+export type ExerciseState = {
   done: boolean;
   sets: WorkoutSet[];
   notes: string;
@@ -20,4 +20,4 @@ export type Exercise = {
 
 export type Plan = Record<DayType, Exercise[]>;
 
-export type WorkoutState = Record<DayType, Record<number, ExerciseStats>>;
+export type WorkoutState = Record<DayType, Record<number, ExerciseState>>;

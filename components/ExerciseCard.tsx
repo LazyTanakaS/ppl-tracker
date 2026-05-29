@@ -60,6 +60,7 @@ export default function ExerciseCard({
           <div key={i} className="set-row">
             <div className="set-num">{i + 1}</div>
             <input
+              autoComplete="off"
               type="number"
               className="set-input"
               placeholder="кг"
@@ -68,6 +69,7 @@ export default function ExerciseCard({
             />
 
             <input
+              autoComplete="off"
               type="number"
               className="set-input"
               placeholder={exercise.reps}
@@ -78,6 +80,7 @@ export default function ExerciseCard({
             />
 
             <input
+              autoComplete="off"
               type="text"
               className="set-input"
               placeholder="-"
