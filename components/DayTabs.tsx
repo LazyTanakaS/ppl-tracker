@@ -5,7 +5,7 @@ interface DayTabsProps {
   onSwitch: (day: DayType | "history") => void;
 }
 
-const TABS: { day: DayType; label: string; sub: string }[] = [
+const TABS: { day: DayType | "history"; label: string; sub: string }[] = [
   { day: "push", label: "PUSH", sub: "Грудь · Плечи · Трицепс" },
   { day: "pull", label: "PULL", sub: "Спина · Бицепс" },
   { day: "legs", label: "LEGS", sub: "Ноги · Пресс" },
