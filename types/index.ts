@@ -29,3 +29,5 @@ export type History = WorkoutSession[];
 export type Plan = Record<DayType, Exercise[]>;
 
 export type WorkoutState = Record<DayType, Record<number, ExerciseState>>;
+
+export type Schedule = Partial<Record<number, DayType>>;

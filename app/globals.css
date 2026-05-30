@@ -577,3 +577,113 @@ input[type="number"] {
   font-size: 11px;
   color: var(--text-muted);
 }
+
+/* MODAL */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.08);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  width: 100%;
+  padding: 23px 16px 40px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.modal-title {
+  font-family: var(--font-bebas), sans-serif;
+  font-size: 28px;
+  letter-spacing: 3px;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.schedule-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.schedule-weekday {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  width: 28px;
+  letter-spacing: 1px;
+}
+
+.schedule-options {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+
+.schedule-btn {
+  flex: 1;
+  padding: 8px 4px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.schedule-btn.push.active {
+  border-color: var(--accent-push);
+  color: var(--accent-push);
+}
+.schedule-btn.pull.active {
+  border-color: var(--accent-pull);
+  color: var(--accent-pull);
+}
+.schedule-btn.legs.active {
+  border-color: var(--accent-legs);
+  color: var(--accent-legs);
+}
+.schedule-btn.rest.active {
+  border-color: var(--text-dim);
+  color: var(--text-dim);
+}
+
+.schedule-open-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 2px;
+}
+
+.schedule-open-btn:hover {
+  border-color: var(--text-dim);
+  color: var(--text);
+}

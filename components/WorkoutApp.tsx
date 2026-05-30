@@ -4,20 +4,25 @@ import { useEffect, useState } from "react";
 import { useWorkoutState } from "../hooks/useWorkoutState";
 import { PLAN } from "@/data/plan";
 import type { DayType } from "../types";
-type ActiveTab = DayType | "history";
 import { useHistory } from "@/hooks/useHistory";
 import Header from "./Header";
 import DayTabs from "./DayTabs";
 import DayPanel from "./DayPanel";
 import HistoryPanel from "./HistoryPanel";
+import { useSchedule } from "@/hooks/useSchedule";
+import ScheduleModal from "./ScheduleModal";
+
+type ActiveTab = DayType | "history";
 
 export default function WorkoutApp() {
   const { workout, toggleDone, updateSet, updateNotes, resetDay } =
     useWorkoutState();
   const { history, saveSession } = useHistory();
   const [mounted, setMounted] = useState(false);
+  const { schedule, setDay, getTodayTab } = useSchedule();
+  const [scheduleOpen, setScheduleOpen] = useState(false);
 
-  const [activeDay, setActiveDay] = useState<ActiveTab>("push");
+  const [activeDay, setActiveDay] = useState<ActiveTab>(() => getTodayTab());
 
   useEffect(() => {
     setMounted(true);
@@ -26,7 +31,7 @@ export default function WorkoutApp() {
   if (!mounted)
     return (
       <main>
-        <Header />
+        <Header onScheduleOpen={() => {}} />
         <div
           style={{
             padding: "40px 0",
@@ -43,7 +48,16 @@ export default function WorkoutApp() {
 
   return (
     <main>
-      <Header />
+      <Header onScheduleOpen={() => setScheduleOpen(true)} />
+
+      {scheduleOpen && (
+        <ScheduleModal
+          schedule={schedule}
+          onSetDay={setDay}
+          onClose={() => setScheduleOpen(false)}
+        />
+      )}
+
       <DayTabs activeDay={activeDay} onSwitch={setActiveDay} />
       {activeDay === "history" ? (
         <HistoryPanel history={history} />

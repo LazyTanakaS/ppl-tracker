@@ -1,6 +1,10 @@
 "use client";
 
-export default function Header() {
+interface HeaderProps {
+  onScheduleOpen: () => void;
+}
+
+export default function Header({ onScheduleOpen }: HeaderProps) {
   const now = new Date();
   const days = [
     "ВОСКРЕСЕНЬЕ",
@@ -36,9 +40,16 @@ export default function Header() {
       <div className="logo">
         PPL<span>.</span>
       </div>
-      <div className="date-display">
-        {dayName} <br />
-        {date} {monthName} {year}
+
+      <div style={{ display: "flex", alignItems: "flex-end", gap: "16px" }}>
+        <button className="schedule-open-btn" onClick={onScheduleOpen}>
+          ☰
+        </button>
+
+        <div className="date-display">
+          {dayName} <br />
+          {date} {monthName} {year}
+        </div>
       </div>
     </header>
   );
