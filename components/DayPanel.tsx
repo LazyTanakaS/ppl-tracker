@@ -19,6 +19,7 @@ interface DayPanelProps {
   onUpdateNotes: (day: DayType, exIdx: number, value: string) => void;
   onReset: (day: DayType) => void;
   onSave: () => void;
+  onEditPlan: () => void;
 }
 
 export default function DayPanel({
@@ -31,6 +32,7 @@ export default function DayPanel({
   onUpdateNotes,
   onReset,
   onSave,
+  onEditPlan,
 }: DayPanelProps) {
   const doneCount = exercises.filter((_, i) => workout[i]?.done).length;
   const [saved, setSaved] = useState(false);
@@ -52,6 +54,9 @@ export default function DayPanel({
       <div className="day-header">
         <div className={`day-title ${day}`}>{day.toUpperCase()}</div>
         <div className="day-muscles">{MUSCLES[day]}</div>
+        <button className="plan-edit-open-btn" onClick={onEditPlan}>
+          ✎ ПЛАН
+        </button>
       </div>
 
       <ProgressBar day={day} done={doneCount} total={exercises.length} />

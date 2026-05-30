@@ -1,5 +1,11 @@
 import { useState } from "react";
-import type { History, WorkoutSession, DayType, ExerciseState } from "@/types";
+import type {
+  History,
+  WorkoutSession,
+  DayType,
+  ExerciseState,
+  Exercise,
+} from "@/types";
 
 export function useHistory() {
   const [history, setHistory] = useState<History>(() => {
@@ -8,10 +14,15 @@ export function useHistory() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  function saveSession(day: DayType, workout: Record<number, ExerciseState>) {
+  function saveSession(
+    day: DayType,
+    exercises: Exercise[],
+    workout: Record<number, ExerciseState>,
+  ) {
     const session: WorkoutSession = {
       date: new Date().toISOString(),
       day,
+      exercises,
       workout,
     };
     const updated = [session, ...history].slice(0, 30);

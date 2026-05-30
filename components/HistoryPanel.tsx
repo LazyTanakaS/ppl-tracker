@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import type { History, DayType } from "@/types";
-import { PLAN } from "@/data/plan";
 
 interface HistoryPanelProps {
   history: History;
@@ -26,7 +25,7 @@ export default function HistoryPanel({ history, onDelete }: HistoryPanelProps) {
     <div className="history-list">
       {history.map((session, i) => {
         const date = new Date(session.date);
-        const exercises = PLAN[session.day];
+        const exercises = session.exercises ?? [];
         const doneCount = exercises.filter(
           (_, idx) => session.workout[idx]?.done,
         ).length;

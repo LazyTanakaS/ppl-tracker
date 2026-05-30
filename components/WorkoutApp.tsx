@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useWorkoutState } from "../hooks/useWorkoutState";
-import { PLAN } from "@/data/plan";
+import { usePlan } from "@/hooks/usePlan";
 import type { DayType } from "../types";
 import { useHistory } from "@/hooks/useHistory";
 import Header from "./Header";
@@ -11,6 +11,7 @@ import DayPanel from "./DayPanel";
 import HistoryPanel from "./HistoryPanel";
 import { useSchedule } from "@/hooks/useSchedule";
 import ScheduleModal from "./ScheduleModal";
+import PlanModal from "./PlanModal";
 
 type ActiveTab = DayType | "history";
 
@@ -21,6 +22,14 @@ export default function WorkoutApp() {
   const [mounted, setMounted] = useState(false);
   const { schedule, setDay, getTodayTab } = useSchedule();
   const [scheduleOpen, setScheduleOpen] = useState(false);
+  const {
+    plan,
+    addExercise,
+    removeExercise,
+    updateExercise,
+    resetDay: resetPlanDay,
+  } = usePlan();
+  const [planModalDay, setPlanModalDay] = useState<DayType | null>(null);
 
   const [activeDay, setActiveDay] = useState<ActiveTab>(() => getTodayTab());
 
@@ -58,6 +67,18 @@ export default function WorkoutApp() {
         />
       )}
 
+      {planModalDay && (
+        <PlanModal
+          day={planModalDay}
+          exercises={plan[planModalDay]}
+          onAdd={addExercise}
+          onRemove={removeExercise}
+          onUpdate={updateExercise}
+          onReset={resetPlanDay}
+          onClose={() => setPlanModalDay(null)}
+        />
+      )}
+
       <DayTabs activeDay={activeDay} onSwitch={setActiveDay} />
       {activeDay === "history" ? (
         <HistoryPanel history={history} onDelete={deleteSession} />
@@ -67,13 +88,14 @@ export default function WorkoutApp() {
             key={day}
             day={day}
             isActive={day === activeDay}
-            exercises={PLAN[day]}
+            exercises={plan[day]}
             workout={workout[day]}
             onToggleDone={toggleDone}
             onUpdateSet={updateSet}
             onUpdateNotes={updateNotes}
             onReset={resetDay}
-            onSave={() => saveSession(day, workout[day])}
+            onSave={() => saveSession(day, plan[day], workout[day])}
+            onEditPlan={() => setPlanModalDay(day)}
           />
         ))
       )}

@@ -21,6 +21,7 @@ export type Exercise = {
 export type WorkoutSession = {
   date: string;
   day: DayType;
+  exercises: Exercise[];
   workout: Record<number, ExerciseState>;
 };
 

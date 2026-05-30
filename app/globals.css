@@ -732,3 +732,177 @@ input[type="number"] {
   border-color: var(--text-dim);
   color: var(--text);
 }
+
+/* PLAN */
+
+.plan-list {
+  margin-bottom: 16px;
+}
+
+.plan-exercise-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.plan-ex-name {
+  flex: 1;
+  font-size: 13px;
+}
+
+.plan-ex-meta {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.plan-edit-btn,
+.plan-remove-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 13px;
+  transition: color 0.15s;
+}
+
+.plan-edit-btn:hover {
+  color: var(--accent-pull);
+}
+
+.plan-edit-open-btn {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.plan-edit-open-btn:hover {
+  border-color: var(--text-dim);
+  color: var(--text);
+}
+
+.plan-remove-btn:hover {
+  color: var(--accent-push);
+}
+
+.plan-form {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.plan-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans), sans-serif;
+  font-size: 13px;
+  padding: 8px 10px;
+  outline: none;
+}
+
+.plan-input:focus {
+  border-color: var(--accent-pull);
+}
+
+.plan-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.plan-input-small {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  padding: 8px 10px;
+  outline: none;
+  width: 100%;
+}
+
+.plan-input-small:focus {
+  border-color: var(--accent-pull);
+}
+
+.plan-form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.plan-save-btn {
+  flex: 1;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid var(--accent-pull);
+  color: var(--accent-pull);
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.plan-cancel-btn {
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.plan-add-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 8px;
+}
+
+.plan-add-btn:hover {
+  border-color: var(--accent-pull);
+  color: var(--accent-pull);
+}
+
+.plan-reset-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 8px;
+}
+
+.plan-reset-btn:hover {
+  border-color: #444;
+  color: var(--text);
+}
