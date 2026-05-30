@@ -12,7 +12,7 @@ export default function ProgressBar({ day, done, total }: ProgressBarProps) {
   return (
     <div className={`progress-wrap ${day}`}>
       <div className="progress-info">
-        <span>ПРОГРЕСС</span>{" "}
+        <span>PROGRESS</span>{" "}
         <span>
           {done} / {total}
         </span>

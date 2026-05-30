@@ -44,9 +44,9 @@ export default function DayPanel({
   }
 
   const MUSCLES = {
-    push: "Грудь / Плечи / Трицепс",
-    pull: "Спина / Бицепс",
-    legs: "Ноги / Пресс",
+    push: "Chest / Shoulders / Triceps",
+    pull: "Back / Biceps",
+    legs: "Legs / Abs",
   };
 
   return (
@@ -55,7 +55,7 @@ export default function DayPanel({
         <div className={`day-title ${day}`}>{day.toUpperCase()}</div>
         <div className="day-muscles">{MUSCLES[day]}</div>
         <button className="plan-edit-open-btn" onClick={onEditPlan}>
-          ✎ ПЛАН
+          ✎ PLAN
         </button>
       </div>
 
@@ -75,14 +75,14 @@ export default function DayPanel({
       ))}
 
       <button className="reset-btn" onClick={() => onReset(day)}>
-        ↺ Сбросить день
+        ↺ Reset day
       </button>
 
       <button
         className={`save-btn ${saved ? "saved" : ""}`}
         onClick={handleSave}
       >
-        {saved ? "✓ Сохранено" : "↓ Сохранить сессию"}
+        {saved ? "✓ Saved" : "↓ Save session"}
       </button>
     </div>
   );

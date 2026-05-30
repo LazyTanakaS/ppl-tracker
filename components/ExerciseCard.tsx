@@ -54,9 +54,9 @@ export default function ExerciseCard({
         <div>
           <div className="sets-label">
             <span>#</span>
-            <span>КГ</span>
-            <span>ПОВТ</span>
-            <span>ЗАМЕТКА</span>
+            <span>KG</span>
+            <span>REPS</span>
+            <span>NOTE</span>
           </div>
 
           {isRunning && timeLeft !== null && (
@@ -73,7 +73,7 @@ export default function ExerciseCard({
                 autoComplete="off"
                 type="number"
                 className="set-input"
-                placeholder="кг"
+                placeholder="kg"
                 value={exState?.sets?.[i]?.kg ?? ""}
                 onChange={(e) =>
                   onUpdateSet(day, exIdx, i, "kg", e.target.value)
@@ -108,15 +108,19 @@ export default function ExerciseCard({
             className={`rest-btn ${isRunning ? "active" : ""}`}
             onClick={(e) => {
               e.stopPropagation();
-              isRunning ? stop() : start();
+              if (isRunning) {
+                stop();
+              } else {
+                start();
+              }
             }}
           >
-            {isRunning ? "СТОП" : "REST"}
+            {isRunning ? "STOP" : "REST"}
           </button>
 
           <textarea
             className="notes-input"
-            placeholder="Заметки по упражнению..."
+            placeholder="Exercise notes..."
             value={exState?.notes ?? ""}
             onChange={(e) => onUpdateNotes(day, exIdx, e.target.value)}
           />

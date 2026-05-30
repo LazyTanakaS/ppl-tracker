@@ -61,7 +61,7 @@ export default function PlanModal({
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <span className="modal-title">{day.toUpperCase()}— ПЛАН</span>
+          <span className="modal-title">{day.toUpperCase()} - PLAN</span>
           <button className="modal-close" onClick={onClose}>
             ✕
           </button>
@@ -74,7 +74,7 @@ export default function PlanModal({
                 <div className="plan-form">
                   <input
                     className="plan-input"
-                    placeholder="Название"
+                    placeholder="Name"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                   />
@@ -82,7 +82,7 @@ export default function PlanModal({
                     <input
                       className="plan-input-small"
                       type="number"
-                      placeholder="Подходы"
+                      placeholder="Sets"
                       value={form.sets}
                       onChange={(e) =>
                         setForm({ ...form, sets: +e.target.value })
@@ -90,7 +90,7 @@ export default function PlanModal({
                     />
                     <input
                       className="plan-input-small"
-                      placeholder="Повторения"
+                      placeholder="Reps"
                       value={form.reps}
                       onChange={(e) =>
                         setForm({ ...form, reps: e.target.value })
@@ -99,10 +99,10 @@ export default function PlanModal({
                   </div>
                   <div className="plan-form-actions">
                     <button className="plan-save-btn" onClick={handleSave}>
-                      Сохранить
+                      Save
                     </button>
                     <button className="plan-cancel-btn" onClick={handleCancel}>
-                      Отмена
+                      Cancel
                     </button>
                   </div>
                 </div>
@@ -134,7 +134,7 @@ export default function PlanModal({
           <div className="plan-form">
             <input
               className="plan-input"
-              placeholder="Название упражнения"
+              placeholder="Exercise name"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
@@ -142,13 +142,13 @@ export default function PlanModal({
               <input
                 className="plan-input-small"
                 type="number"
-                placeholder="Подходы"
+                placeholder="Sets"
                 value={form.sets}
                 onChange={(e) => setForm({ ...form, sets: +e.target.value })}
               />
               <input
                 className="plan-input-small"
-                placeholder="Повторения (напр. 10-12)"
+                placeholder="Reps (e.g. 10-12)"
                 value={form.reps}
                 onChange={(e) => setForm({ ...form, reps: e.target.value })}
               />
@@ -156,16 +156,16 @@ export default function PlanModal({
 
             <div className="plan-form-actions">
               <button className="plan-save-btn" onClick={handleSave}>
-                Добавить
+                Add
               </button>
               <button className="plan-cancel-btn" onClick={handleCancel}>
-                Отмена
+                Cancel
               </button>
             </div>
           </div>
         ) : (
           <button className="plan-add-btn" onClick={startAdd}>
-            + Добавить упражнение
+            + Add exercise
           </button>
         )}
 
@@ -176,7 +176,7 @@ export default function PlanModal({
             onClose();
           }}
         >
-          ↺ Сбросить к стандартному
+          ↺ Reset to default
         </button>
       </div>
     </div>

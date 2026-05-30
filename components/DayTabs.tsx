@@ -6,10 +6,10 @@ interface DayTabsProps {
 }
 
 const TABS: { day: DayType | "history"; label: string; sub: string }[] = [
-  { day: "push", label: "PUSH", sub: "Грудь · Плечи · Трицепс" },
-  { day: "pull", label: "PULL", sub: "Спина · Бицепс" },
-  { day: "legs", label: "LEGS", sub: "Ноги · Пресс" },
-  { day: "history" as const, label: "HIST", sub: "История" },
+  { day: "push", label: "PUSH", sub: "Chest · Shoulders · Triceps" },
+  { day: "pull", label: "PULL", sub: "Back · Biceps" },
+  { day: "legs", label: "LEGS", sub: "Legs · Abs" },
+  { day: "history" as const, label: "HIST", sub: "History" },
 ];
 
 export default function DayTabs({ activeDay, onSwitch }: DayTabsProps) {

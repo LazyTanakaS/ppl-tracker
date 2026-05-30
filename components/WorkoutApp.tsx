@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useWorkoutState } from "../hooks/useWorkoutState";
 import { usePlan } from "@/hooks/usePlan";
 import type { DayType } from "../types";
@@ -19,7 +19,11 @@ export default function WorkoutApp() {
   const { workout, toggleDone, updateSet, updateNotes, resetDay } =
     useWorkoutState();
   const { history, saveSession, deleteSession } = useHistory();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const { schedule, setDay, getTodayTab } = useSchedule();
   const [scheduleOpen, setScheduleOpen] = useState(false);
   const {
@@ -32,10 +36,6 @@ export default function WorkoutApp() {
   const [planModalDay, setPlanModalDay] = useState<DayType | null>(null);
 
   const [activeDay, setActiveDay] = useState<ActiveTab>(() => getTodayTab());
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   if (!mounted)
     return (
@@ -50,7 +50,7 @@ export default function WorkoutApp() {
             letterSpacing: "2px",
           }}
         >
-          ЗАГРУЗКА...
+          LOADING...
         </div>
       </main>
     );

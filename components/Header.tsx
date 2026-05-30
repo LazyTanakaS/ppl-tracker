@@ -7,27 +7,27 @@ interface HeaderProps {
 export default function Header({ onScheduleOpen }: HeaderProps) {
   const now = new Date();
   const days = [
-    "ВОСКРЕСЕНЬЕ",
-    "ПОНЕДЕЛЬНИК",
-    "ВТОРНИК",
-    "СРЕДА",
-    "ЧЕТВЕРГ",
-    "ПЯТНИЦА",
-    "СУББОТА",
+    "SUNDAY",
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY",
   ];
   const month = [
-    "ЯНВ",
-    "ФЕВ",
-    "МАР",
-    "АПР",
-    "МАЙ",
-    "ИЮН",
-    "ИЮЛ",
-    "АВГ",
-    "СЕН",
-    "ОКТ",
-    "НОЯ",
-    "ДЕК",
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC",
   ];
 
   const dayName = days[now.getDay()];

@@ -7,13 +7,13 @@ interface ScheduleModalProps {
 }
 
 const WEEKDAYS = [
-  { num: 1, label: "ПН" },
-  { num: 2, label: "ВТ" },
-  { num: 3, label: "СР" },
-  { num: 4, label: "ЧТ" },
-  { num: 5, label: "ПТ" },
-  { num: 6, label: "СБ" },
-  { num: 0, label: "ВС" },
+  { num: 1, label: "MON" },
+  { num: 2, label: "TUE" },
+  { num: 3, label: "WED" },
+  { num: 4, label: "THU" },
+  { num: 5, label: "FRI" },
+  { num: 6, label: "SAT" },
+  { num: 0, label: "SUN" },
 ];
 
 const DAY_OPTIONS: (DayType | null)[] = ["push", "pull", "legs", null];
@@ -22,7 +22,7 @@ const DAY_LABELS: Record<string, string> = {
   push: "PUSH",
   pull: "PULL",
   legs: "LEGS",
-  rest: "ОТДЫХ",
+  rest: "REST",
 };
 
 export default function ScheduleModal({
@@ -34,7 +34,7 @@ export default function ScheduleModal({
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <span className="modal-title">РАСПИСАНИЕ</span>
+          <span className="modal-title">SCHEDULE</span>
           <button className="modal-close" onClick={onClose}>
             ✕
           </button>

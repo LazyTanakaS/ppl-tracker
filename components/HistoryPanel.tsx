@@ -18,7 +18,7 @@ export default function HistoryPanel({ history, onDelete }: HistoryPanelProps) {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   if (history.length === 0) {
-    return <div className="history-empty">Нет сохранённых сессий</div>;
+    return <div className="history-empty">No saved sessions</div>;
   }
 
   return (
@@ -45,7 +45,7 @@ export default function HistoryPanel({ history, onDelete }: HistoryPanelProps) {
               </span>
 
               <span className="history-date">
-                {date.toLocaleDateString("ru-RU", {
+                {date.toLocaleDateString("en-US", {
                   day: "numeric",
                   month: "short",
                   year: "numeric",
@@ -81,7 +81,7 @@ export default function HistoryPanel({ history, onDelete }: HistoryPanelProps) {
                         {hasData
                           ? sets
                               .filter((s) => s.kg)
-                              .map((s) => `${s.kg}кг×${s.reps || "?"}`)
+                              .map((s) => `${s.kg}kgx${s.reps || "?"}`)
                               .join("/")
                           : "-"}
                       </span>
