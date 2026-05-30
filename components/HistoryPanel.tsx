@@ -3,6 +3,7 @@ import { PLAN } from "@/data/plan";
 
 interface HistoryPanelProps {
   history: History;
+  onDelete: (index: number) => void;
 }
 
 const DAY_COLORS: Record<DayType, string> = {
@@ -11,7 +12,7 @@ const DAY_COLORS: Record<DayType, string> = {
   legs: "var(--accent-legs)",
 };
 
-export default function HistoryPanel({ history }: HistoryPanelProps) {
+export default function HistoryPanel({ history, onDelete }: HistoryPanelProps) {
   if (history.length === 0) {
     return <div className="history-empty">Нет сохранённых сессий</div>;
   }
@@ -34,6 +35,7 @@ export default function HistoryPanel({ history }: HistoryPanelProps) {
               >
                 {session.day.toUpperCase()}
               </span>
+
               <span className="history-date">
                 {date.toLocaleDateString("ru-RU", {
                   day: "numeric",
@@ -41,9 +43,17 @@ export default function HistoryPanel({ history }: HistoryPanelProps) {
                   year: "numeric",
                 })}
               </span>
+
               <span className="history-progress">
                 {doneCount}/{exercises.length}
               </span>
+
+              <button
+                className="history-delete-btn"
+                onClick={() => onDelete(i)}
+              >
+                ✕
+              </button>
             </div>
           </div>
         );

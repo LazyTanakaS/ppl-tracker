@@ -578,6 +578,20 @@ input[type="number"] {
   color: var(--text-muted);
 }
 
+.history-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.15s;
+}
+
+.history-delete-btn:hover {
+  color: var(--accent-push);
+}
+
 /* MODAL */
 
 .modal-overlay {

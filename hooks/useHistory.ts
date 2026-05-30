@@ -14,10 +14,16 @@ export function useHistory() {
       day,
       workout,
     };
-    const updated = [session, ...history];
+    const updated = [session, ...history].slice(0, 30);
     setHistory(updated);
     localStorage.setItem("ppl_history", JSON.stringify(updated));
   }
 
-  return { history, saveSession };
+  function deleteSession(index: number) {
+    const updated = history.filter((_, i) => i !== index);
+    setHistory(updated);
+    localStorage.setItem("ppl_history", JSON.stringify(updated));
+  }
+
+  return { history, saveSession, deleteSession };
 }

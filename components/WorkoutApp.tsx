@@ -17,7 +17,7 @@ type ActiveTab = DayType | "history";
 export default function WorkoutApp() {
   const { workout, toggleDone, updateSet, updateNotes, resetDay } =
     useWorkoutState();
-  const { history, saveSession } = useHistory();
+  const { history, saveSession, deleteSession } = useHistory();
   const [mounted, setMounted] = useState(false);
   const { schedule, setDay, getTodayTab } = useSchedule();
   const [scheduleOpen, setScheduleOpen] = useState(false);
@@ -60,7 +60,7 @@ export default function WorkoutApp() {
 
       <DayTabs activeDay={activeDay} onSwitch={setActiveDay} />
       {activeDay === "history" ? (
-        <HistoryPanel history={history} />
+        <HistoryPanel history={history} onDelete={deleteSession} />
       ) : (
         (["push", "pull", "legs"] as DayType[]).map((day) => (
           <DayPanel
