@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import type { History, DayType } from "@/types";
 import { PLAN } from "@/data/plan";
 
@@ -13,6 +16,8 @@ const DAY_COLORS: Record<DayType, string> = {
 };
 
 export default function HistoryPanel({ history, onDelete }: HistoryPanelProps) {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+
   if (history.length === 0) {
     return <div className="history-empty">Нет сохранённых сессий</div>;
   }
@@ -25,10 +30,14 @@ export default function HistoryPanel({ history, onDelete }: HistoryPanelProps) {
         const doneCount = exercises.filter(
           (_, idx) => session.workout[idx]?.done,
         ).length;
+        const isOpen = openIdx === i;
 
         return (
           <div key={i} className="history-card">
-            <div className="history-card-header">
+            <div
+              className="history-card-header"
+              onClick={() => setOpenIdx(isOpen ? null : i)}
+            >
               <span
                 className="history-day"
                 style={{ color: DAY_COLORS[session.day] }}
@@ -50,11 +59,38 @@ export default function HistoryPanel({ history, onDelete }: HistoryPanelProps) {
 
               <button
                 className="history-delete-btn"
-                onClick={() => onDelete(i)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(i);
+                }}
               >
                 ✕
               </button>
             </div>
+
+            {isOpen && (
+              <div className="history-exercises">
+                {exercises.map((ex, idx) => {
+                  const exState = session.workout[idx];
+                  const sets = exState?.sets ?? [];
+                  const hasData = sets.some((s) => s.kg);
+
+                  return (
+                    <div key={idx} className="history-exercise-row">
+                      <span className="history-exercise-name">{ex.name}</span>
+                      <span className="history-exercise-sets">
+                        {hasData
+                          ? sets
+                              .filter((s) => s.kg)
+                              .map((s) => `${s.kg}кг×${s.reps || "?"}`)
+                              .join("/")
+                          : "-"}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         );
       })}
