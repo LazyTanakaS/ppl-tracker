@@ -27,7 +27,7 @@ export default function HistoryPanel({ history, onDelete }: HistoryPanelProps) {
         const date = new Date(session.date);
         const exercises = session.exercises ?? [];
         const doneCount = exercises.filter(
-          (_, idx) => session.workout[idx]?.done,
+          (ex) => session.workout[ex.id]?.done,
         ).length;
         const isOpen = openIdx === i;
 
@@ -69,13 +69,13 @@ export default function HistoryPanel({ history, onDelete }: HistoryPanelProps) {
 
             {isOpen && (
               <div className="history-exercises">
-                {exercises.map((ex, idx) => {
-                  const exState = session.workout[idx];
+                {exercises.map((ex) => {
+                  const exState = session.workout[ex.id];
                   const sets = exState?.sets ?? [];
                   const hasData = sets.some((s) => s.kg);
 
                   return (
-                    <div key={idx} className="history-exercise-row">
+                    <div key={ex.id} className="history-exercise-row">
                       <span className="history-exercise-name">{ex.name}</span>
                       <span className="history-exercise-sets">
                         {hasData

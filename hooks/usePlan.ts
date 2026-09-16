@@ -1,31 +1,38 @@
 import { useState } from "react";
 import type { Plan, DayType, Exercise } from "@/types";
 import { PLAN as DEFAULT_PLAN } from "@/data/plan";
+import { safeGet, safeSet, STORAGE_KEYS } from "@/lib/storage";
+
+function generateId(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  return `ex-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
 
 export function usePlan() {
-  const [plan, setPlan] = useState<Plan>(() => {
-    if (typeof window === "undefined") return DEFAULT_PLAN;
-    const saved = localStorage.getItem("ppl_plan");
-    return saved ? JSON.parse(saved) : DEFAULT_PLAN;
-  });
+  const [plan, setPlan] = useState<Plan>(() =>
+    safeGet(STORAGE_KEYS.plan, DEFAULT_PLAN),
+  );
 
   function save(updated: Plan) {
     setPlan(updated);
-    localStorage.setItem("ppl_plan", JSON.stringify(updated));
+    safeSet(STORAGE_KEYS.plan, updated);
   }
 
-  function addExercise(day: DayType, exercise: Exercise) {
-    save({ ...plan, [day]: [...plan[day], exercise] });
+  function addExercise(day: DayType, exercise: Omit<Exercise, "id">) {
+    save({ ...plan, [day]: [...plan[day], { ...exercise, id: generateId() }] });
   }
 
-  function removeExercise(day: DayType, idx: number) {
-    save({ ...plan, [day]: plan[day].filter((_, i) => i !== idx) });
+  function removeExercise(day: DayType, id: string) {
+    save({ ...plan, [day]: plan[day].filter((ex) => ex.id !== id) });
   }
 
-  function updateExercise(day: DayType, idx: number, exercise: Exercise) {
-    const updated = [...plan[day]];
-    updated[idx] = exercise;
-    save({ ...plan, [day]: updated });
+  function updateExercise(day: DayType, id: string, exercise: Exercise) {
+    save({
+      ...plan,
+      [day]: plan[day].map((ex) => (ex.id === id ? exercise : ex)),
+    });
   }
 
   function resetDay(day: DayType) {

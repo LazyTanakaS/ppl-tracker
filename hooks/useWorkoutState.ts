@@ -2,21 +2,20 @@
 
 import { useState, useEffect } from "react";
 import type { WorkoutState, DayType, WorkoutSet } from "@/types";
+import { safeGet, safeSet, STORAGE_KEYS } from "@/lib/storage";
 
 export function useWorkoutState() {
-  const [workout, setWorkout] = useState<WorkoutState>(() => {
-    if (typeof window === "undefined") return { push: {}, pull: {}, legs: {} };
-    const saved = localStorage.getItem("ppl_workout");
-    return saved ? JSON.parse(saved) : { push: {}, pull: {}, legs: {} };
-  });
+  const [workout, setWorkout] = useState<WorkoutState>(() =>
+    safeGet(STORAGE_KEYS.workout, { push: {}, pull: {}, legs: {} }),
+  );
 
   useEffect(() => {
-    localStorage.setItem("ppl_workout", JSON.stringify(workout));
+    safeSet(STORAGE_KEYS.workout, workout);
   }, [workout]);
 
-  function toggleDone(day: DayType, exIdx: number) {
+  function toggleDone(day: DayType, exId: string) {
     setWorkout((prev) => {
-      const currentEx = prev[day][exIdx] || {
+      const currentEx = prev[day][exId] || {
         done: false,
         sets: [],
         notes: "",
@@ -25,7 +24,7 @@ export function useWorkoutState() {
         ...prev,
         [day]: {
           ...prev[day],
-          [exIdx]: {
+          [exId]: {
             ...currentEx,
             done: !currentEx.done,
           },
@@ -35,13 +34,13 @@ export function useWorkoutState() {
   }
   function updateSet(
     day: DayType,
-    exIdx: number,
+    exId: string,
     setIdx: number,
     field: keyof WorkoutSet,
     value: string,
   ) {
     setWorkout((prev) => {
-      const currentEx = prev[day][exIdx] || {
+      const currentEx = prev[day][exId] || {
         done: false,
         sets: [],
         notes: "",
@@ -53,7 +52,7 @@ export function useWorkoutState() {
         ...prev,
         [day]: {
           ...prev[day],
-          [exIdx]: {
+          [exId]: {
             ...currentEx,
             sets: newSets,
           },
@@ -62,9 +61,9 @@ export function useWorkoutState() {
     });
   }
 
-  function updateNotes(day: DayType, exIdx: number, value: string) {
+  function updateNotes(day: DayType, exId: string, value: string) {
     setWorkout((prev) => {
-      const currentEx = prev[day][exIdx] || {
+      const currentEx = prev[day][exId] || {
         done: false,
         sets: [],
         notes: "",
@@ -74,7 +73,7 @@ export function useWorkoutState() {
         ...prev,
         [day]: {
           ...prev[day],
-          [exIdx]: {
+          [exId]: {
             ...currentEx,
             notes: value,
           },

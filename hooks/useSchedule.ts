@@ -1,12 +1,11 @@
 import { useState } from "react";
 import type { Schedule, DayType } from "@/types";
+import { safeSet, safeGet, STORAGE_KEYS } from "@/lib/storage";
 
 export function useSchedule() {
-  const [schedule, setSchedule] = useState<Schedule>(() => {
-    if (typeof window === "undefined") return {};
-    const saved = localStorage.getItem("ppl_schedule");
-    return saved ? JSON.parse(saved) : {};
-  });
+  const [schedule, setSchedule] = useState<Schedule>(() =>
+    safeGet(STORAGE_KEYS.schedule, {}),
+  );
 
   function setDay(weekday: number, day: DayType | null) {
     const updated = { ...schedule };
@@ -15,8 +14,8 @@ export function useSchedule() {
     } else {
       updated[weekday] = day;
     }
-    setSchedule(updated);
-    localStorage.setItem("ppl_schedule", JSON.stringify(updated));
+    const ok = safeSet(STORAGE_KEYS.schedule, updated);
+    if (ok) setSchedule(updated);
   }
 
   function getTodayTab(): DayType | "history" {

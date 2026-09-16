@@ -6,23 +6,23 @@ import { useRestTimer } from "../hooks/useRestTimer";
 
 interface ExerciseCardProps {
   day: DayType;
-  exIdx: number;
+  exId: string;
   exercise: Exercise;
   exState: ExerciseState | undefined;
-  onToggleDone: (day: DayType, exIdx: number) => void;
+  onToggleDone: (day: DayType, exId: string) => void;
   onUpdateSet: (
     day: DayType,
-    exIdx: number,
+    exId: string,
     setIdx: number,
     field: keyof WorkoutSet,
     value: string,
   ) => void;
-  onUpdateNotes: (day: DayType, exIdx: number, value: string) => void;
+  onUpdateNotes: (day: DayType, exId: string, value: string) => void;
 }
 
 export default function ExerciseCard({
   day,
-  exIdx,
+  exId,
   exercise,
   exState,
   onToggleDone,
@@ -40,7 +40,7 @@ export default function ExerciseCard({
           className={`exercise-check ${isDone ? "checked" : ""}`}
           onClick={(e) => {
             e.stopPropagation();
-            onToggleDone(day, exIdx);
+            onToggleDone(day, exId);
           }}
         />
         <div className="exercise-name">{exercise.name}</div>
@@ -76,7 +76,7 @@ export default function ExerciseCard({
                 placeholder="kg"
                 value={exState?.sets?.[i]?.kg ?? ""}
                 onChange={(e) =>
-                  onUpdateSet(day, exIdx, i, "kg", e.target.value)
+                  onUpdateSet(day, exId, i, "kg", e.target.value)
                 }
               />
 
@@ -87,7 +87,7 @@ export default function ExerciseCard({
                 placeholder={exercise.reps}
                 value={exState?.sets?.[i]?.reps ?? ""}
                 onChange={(e) =>
-                  onUpdateSet(day, exIdx, i, "reps", e.target.value)
+                  onUpdateSet(day, exId, i, "reps", e.target.value)
                 }
               />
 
@@ -98,7 +98,7 @@ export default function ExerciseCard({
                 placeholder="-"
                 value={exState?.sets?.[i]?.note ?? ""}
                 onChange={(e) =>
-                  onUpdateSet(day, exIdx, i, "note", e.target.value)
+                  onUpdateSet(day, exId, i, "note", e.target.value)
                 }
               />
             </div>
@@ -122,7 +122,7 @@ export default function ExerciseCard({
             className="notes-input"
             placeholder="Exercise notes..."
             value={exState?.notes ?? ""}
-            onChange={(e) => onUpdateNotes(day, exIdx, e.target.value)}
+            onChange={(e) => onUpdateNotes(day, exId, e.target.value)}
           />
         </div>
       </div>

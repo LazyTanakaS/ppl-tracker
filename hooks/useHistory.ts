@@ -6,34 +6,37 @@ import type {
   ExerciseState,
   Exercise,
 } from "@/types";
+import { safeGet, safeSet, STORAGE_KEYS } from "@/lib/storage";
 
 export function useHistory() {
-  const [history, setHistory] = useState<History>(() => {
-    if (typeof window === "undefined") return [];
-    const saved = localStorage.getItem("ppl_history");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [history, setHistory] = useState<History>(() =>
+    safeGet<History>(STORAGE_KEYS.history, []),
+  );
+
+  const MAX_HISTORY = 500;
 
   function saveSession(
     day: DayType,
     exercises: Exercise[],
-    workout: Record<number, ExerciseState>,
-  ) {
+    workout: Record<string, ExerciseState>,
+  ): boolean {
     const session: WorkoutSession = {
       date: new Date().toISOString(),
       day,
       exercises,
       workout,
     };
-    const updated = [session, ...history].slice(0, 30);
-    setHistory(updated);
-    localStorage.setItem("ppl_history", JSON.stringify(updated));
+    const updated = [session, ...history].slice(0, MAX_HISTORY);
+    const ok = safeSet(STORAGE_KEYS.history, updated);
+
+    if (ok) setHistory(updated);
+    return ok;
   }
 
   function deleteSession(index: number) {
     const updated = history.filter((_, i) => i !== index);
-    setHistory(updated);
-    localStorage.setItem("ppl_history", JSON.stringify(updated));
+    const ok = safeSet(STORAGE_KEYS.history, updated);
+    if (ok) setHistory(updated);
   }
 
   return { history, saveSession, deleteSession };

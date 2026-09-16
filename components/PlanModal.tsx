@@ -5,14 +5,16 @@ import type { DayType, Exercise } from "@/types";
 interface PlanModalProps {
   day: DayType;
   exercises: Exercise[];
-  onAdd: (day: DayType, exercise: Exercise) => void;
-  onRemove: (day: DayType, idx: number) => void;
-  onUpdate: (day: DayType, idx: number, exercise: Exercise) => void;
+  onAdd: (day: DayType, exercise: Omit<Exercise, "id">) => void;
+  onRemove: (day: DayType, id: string) => void;
+  onUpdate: (day: DayType, id: string, exercise: Exercise) => void;
   onReset: (day: DayType) => void;
   onClose: () => void;
 }
 
-const EMPTY: Exercise = { name: "", sets: 3, reps: "10-12" };
+type ExerciseForm = Omit<Exercise, "id">;
+
+const EMPTY: ExerciseForm = { name: "", sets: 3, reps: "10-12" };
 
 export default function PlanModal({
   day,
@@ -23,19 +25,19 @@ export default function PlanModal({
   onClose,
   onUpdate,
 }: PlanModalProps) {
-  const [editIdx, setEditIdx] = useState<number | null>(null);
-  const [form, setForm] = useState<Exercise>(EMPTY);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [form, setForm] = useState<ExerciseForm>(EMPTY);
   const [adding, setAdding] = useState(false);
 
-  function startEdit(idx: number) {
-    setEditIdx(idx);
-    setForm(exercises[idx]);
+  function startEdit(ex: Exercise) {
+    setEditId(ex.id);
+    setForm({ name: ex.name, sets: ex.sets, reps: ex.reps });
     setAdding(false);
   }
 
   function startAdd() {
     setAdding(true);
-    setEditIdx(null);
+    setEditId(null);
     setForm(EMPTY);
   }
 
@@ -43,17 +45,17 @@ export default function PlanModal({
     if (!form.name.trim()) return;
     if (adding) {
       onAdd(day, form);
-    } else if (editIdx !== null) {
-      onUpdate(day, editIdx, form);
+    } else if (editId !== null) {
+      onUpdate(day, editId, { ...form, id: editId });
     }
     setAdding(false);
-    setEditIdx(null);
+    setEditId(null);
     setForm(EMPTY);
   }
 
   function handleCancel() {
     setAdding(false);
-    setEditIdx(null);
+    setEditId(null);
     setForm(EMPTY);
   }
 
@@ -68,9 +70,9 @@ export default function PlanModal({
         </div>
 
         <div className="plan-list">
-          {exercises.map((ex, i) => (
-            <div key={i} className="plan-exercise-row">
-              {editIdx === i ? (
+          {exercises.map((ex) => (
+            <div key={ex.id} className="plan-exercise-row">
+              {editId === ex.id ? (
                 <div className="plan-form">
                   <input
                     className="plan-input"
@@ -114,13 +116,13 @@ export default function PlanModal({
                   </span>
                   <button
                     className="plan-edit-btn"
-                    onClick={() => startEdit(i)}
+                    onClick={() => startEdit(ex)}
                   >
                     ✎
                   </button>
                   <button
                     className="plan-remove-btn"
-                    onClick={() => onRemove(day, i)}
+                    onClick={() => onRemove(day, ex.id)}
                   >
                     ✕
                   </button>

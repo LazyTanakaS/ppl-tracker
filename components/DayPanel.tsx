@@ -7,18 +7,18 @@ interface DayPanelProps {
   day: DayType;
   isActive: boolean;
   exercises: Exercise[];
-  workout: Record<number, ExerciseState>;
-  onToggleDone: (day: DayType, exIdx: number) => void;
+  workout: Record<string, ExerciseState>;
+  onToggleDone: (day: DayType, exId: string) => void;
   onUpdateSet: (
     day: DayType,
-    exIdx: number,
+    exId: string,
     setIdx: number,
     field: keyof WorkoutSet,
     value: string,
   ) => void;
-  onUpdateNotes: (day: DayType, exIdx: number, value: string) => void;
+  onUpdateNotes: (day: DayType, exId: string, value: string) => void;
   onReset: (day: DayType) => void;
-  onSave: () => void;
+  onSave: () => boolean;
   onEditPlan: () => void;
 }
 
@@ -34,15 +34,21 @@ export default function DayPanel({
   onSave,
   onEditPlan,
 }: DayPanelProps) {
-  const doneCount = exercises.filter((_, i) => workout[i]?.done).length;
+  const doneCount = exercises.filter((ex) => workout[ex.id]?.done).length;
   const [saved, setSaved] = useState(false);
+  const [saveFailed, setSaveFailed] = useState(false);
 
   function handleSave() {
-    onSave();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  }
+    const ok = onSave();
 
+    if (ok) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } else {
+      setSaveFailed(true);
+      setTimeout(() => setSaveFailed(false), 3000);
+    }
+  }
   const MUSCLES = {
     push: "Chest / Shoulders / Triceps",
     pull: "Back / Biceps",
@@ -61,13 +67,13 @@ export default function DayPanel({
 
       <ProgressBar day={day} done={doneCount} total={exercises.length} />
 
-      {exercises.map((ex, i) => (
+      {exercises.map((ex) => (
         <ExerciseCard
-          key={i}
+          key={ex.id}
           day={day}
-          exIdx={i}
+          exId={ex.id}
           exercise={ex}
-          exState={workout[i]}
+          exState={workout[ex.id]}
           onToggleDone={onToggleDone}
           onUpdateSet={onUpdateSet}
           onUpdateNotes={onUpdateNotes}
@@ -84,6 +90,12 @@ export default function DayPanel({
       >
         {saved ? "✓ Saved" : "↓ Save session"}
       </button>
+
+      {saveFailed && (
+        <div style={{ color: "#e05555", fontSize: "12px", marginTop: "8px" }}>
+          Save failed - storage is full. Try exporting/clearing old history.
+        </div>
+      )}
     </div>
   );
 }
