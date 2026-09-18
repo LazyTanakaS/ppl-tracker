@@ -249,6 +249,26 @@ header {
   border-color: var(--accent-pull);
 }
 
+.exercise-check.skipped {
+  background: #e05555;
+  border-color: #e05555;
+}
+
+.exercise-check.skipped::after {
+  content: "x";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 11px;
+  color: #000;
+  font-weight: 700;
+}
+
+.exercise-card.skipped {
+  opacity: 0.5;
+}
+
 .exercise-name {
   flex: 1;
   font-size: 14px;
@@ -905,4 +925,91 @@ input[type="number"] {
 .plan-reset-btn:hover {
   border-color: #444;
   color: var(--text);
+}
+
+.stats-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.stats-section {
+  border: 1px solid var(--border);
+  padding: 14px;
+}
+
+.stats-heading {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+
+.stats-pr-list,
+.stats-bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stats-pr-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.stats-pr-day-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.stats-pr-name {
+  flex: 1;
+}
+
+.stats-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.stats-bar-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  position: relative;
+}
+
+.stats-bar-fill {
+  height: 100%;
+  background: var(--accent-push);
+}
+
+.stats-bar-value {
+  width: 90px;
+  text-align: right;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.stats-select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: inherit;
+  font-family: inherit;
+}
+
+.stats-empty {
+  opacity: 0.5;
+  font-size: 12px;
 }

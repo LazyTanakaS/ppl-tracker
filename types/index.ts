@@ -4,12 +4,6 @@ export type WorkoutSet = {
   note: string;
 };
 
-export type ExerciseState = {
-  done: boolean;
-  sets: WorkoutSet[];
-  notes: string;
-};
-
 export type DayType = "push" | "pull" | "legs";
 
 export type Exercise = {
@@ -17,6 +11,12 @@ export type Exercise = {
   name: string;
   sets: number;
   reps: string;
+};
+
+export type ExerciseState = {
+  status: "pending" | "done" | "skipped";
+  sets: WorkoutSet[];
+  notes: string;
 };
 
 export type WorkoutSession = {

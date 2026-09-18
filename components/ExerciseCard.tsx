@@ -9,7 +9,7 @@ interface ExerciseCardProps {
   exId: string;
   exercise: Exercise;
   exState: ExerciseState | undefined;
-  onToggleDone: (day: DayType, exId: string) => void;
+  onCycleStatus: (day: DayType, exId: string) => void;
   onUpdateSet: (
     day: DayType,
     exId: string,
@@ -25,22 +25,24 @@ export default function ExerciseCard({
   exId,
   exercise,
   exState,
-  onToggleDone,
+  onCycleStatus,
   onUpdateNotes,
   onUpdateSet,
 }: ExerciseCardProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const isDone = exState?.done ?? false;
+  const status = exState?.status ?? "pending";
   const { timeLeft, isRunning, start, stop } = useRestTimer(300);
 
   return (
-    <div className={`exercise-card ${day}-card ${isDone ? "done" : ""}`}>
+    <div
+      className={`exercise-card ${day}-card ${status === "done" ? "done" : ""} ${status === "skipped" ? "skipped" : ""}`}
+    >
       <div className="exercise-header" onClick={() => setIsOpen(!isOpen)}>
         <div
-          className={`exercise-check ${isDone ? "checked" : ""}`}
+          className={`exercise-check ${status === "done" ? "checked" : ""} ${status === "skipped" ? "skipped" : ""}`}
           onClick={(e) => {
             e.stopPropagation();
-            onToggleDone(day, exId);
+            onCycleStatus(day, exId);
           }}
         />
         <div className="exercise-name">{exercise.name}</div>

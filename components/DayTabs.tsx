@@ -1,14 +1,19 @@
 import { DayType } from "../types";
 
 interface DayTabsProps {
-  activeDay: DayType | "history";
-  onSwitch: (day: DayType | "history") => void;
+  activeDay: DayType | "history" | "stats";
+  onSwitch: (day: DayType | "history" | "stats") => void;
 }
 
-const TABS: { day: DayType | "history"; label: string; sub: string }[] = [
+const TABS: {
+  day: DayType | "history" | "stats";
+  label: string;
+  sub: string;
+}[] = [
   { day: "push", label: "PUSH", sub: "Chest · Shoulders · Triceps" },
   { day: "pull", label: "PULL", sub: "Back · Biceps" },
   { day: "legs", label: "LEGS", sub: "Legs · Abs" },
+  { day: "stats" as const, label: "STATS", sub: "Progress" },
   { day: "history" as const, label: "HIST", sub: "History" },
 ];
 

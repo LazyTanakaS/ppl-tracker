@@ -27,7 +27,7 @@ export default function HistoryPanel({ history, onDelete }: HistoryPanelProps) {
         const date = new Date(session.date);
         const exercises = session.exercises ?? [];
         const doneCount = exercises.filter(
-          (ex) => session.workout[ex.id]?.done,
+          (ex) => session.workout[ex.id]?.status === "done",
         ).length;
         const isOpen = openIdx === i;
 

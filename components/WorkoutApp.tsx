@@ -12,11 +12,12 @@ import HistoryPanel from "./HistoryPanel";
 import { useSchedule } from "@/hooks/useSchedule";
 import ScheduleModal from "./ScheduleModal";
 import PlanModal from "./PlanModal";
+import StatsPanel from "./StatsPanel";
 
-type ActiveTab = DayType | "history";
+type ActiveTab = DayType | "history" | "stats";
 
 export default function WorkoutApp() {
-  const { workout, toggleDone, updateSet, updateNotes, resetDay } =
+  const { workout, cycleStatus, updateSet, updateNotes, resetDay } =
     useWorkoutState();
   const { history, saveSession, deleteSession } = useHistory();
   const mounted = useSyncExternalStore(
@@ -82,6 +83,8 @@ export default function WorkoutApp() {
       <DayTabs activeDay={activeDay} onSwitch={setActiveDay} />
       {activeDay === "history" ? (
         <HistoryPanel history={history} onDelete={deleteSession} />
+      ) : activeDay === "stats" ? (
+        <StatsPanel plan={plan} history={history} />
       ) : (
         (["push", "pull", "legs"] as DayType[]).map((day) => (
           <DayPanel
@@ -90,7 +93,7 @@ export default function WorkoutApp() {
             isActive={day === activeDay}
             exercises={plan[day]}
             workout={workout[day]}
-            onToggleDone={toggleDone}
+            onCycleStatus={cycleStatus}
             onUpdateSet={updateSet}
             onUpdateNotes={updateNotes}
             onReset={resetDay}

@@ -13,20 +13,26 @@ export function useWorkoutState() {
     safeSet(STORAGE_KEYS.workout, workout);
   }, [workout]);
 
-  function toggleDone(day: DayType, exId: string) {
+  function cycleStatus(day: DayType, exId: string) {
     setWorkout((prev) => {
       const currentEx = prev[day][exId] || {
-        done: false,
+        status: "pending" as const,
         sets: [],
         notes: "",
       };
+      const status =
+        currentEx.status === "pending"
+          ? "done"
+          : currentEx.status === "done"
+            ? "skipped"
+            : "pending";
       return {
         ...prev,
         [day]: {
           ...prev[day],
           [exId]: {
             ...currentEx,
-            done: !currentEx.done,
+            status,
           },
         },
       };
@@ -41,7 +47,7 @@ export function useWorkoutState() {
   ) {
     setWorkout((prev) => {
       const currentEx = prev[day][exId] || {
-        done: false,
+        status: "pending" as const,
         sets: [],
         notes: "",
       };
@@ -64,7 +70,7 @@ export function useWorkoutState() {
   function updateNotes(day: DayType, exId: string, value: string) {
     setWorkout((prev) => {
       const currentEx = prev[day][exId] || {
-        done: false,
+        status: "pending" as const,
         sets: [],
         notes: "",
       };
@@ -88,5 +94,5 @@ export function useWorkoutState() {
     }));
   }
 
-  return { workout, toggleDone, updateNotes, updateSet, resetDay };
+  return { workout, cycleStatus, updateNotes, updateSet, resetDay };
 }

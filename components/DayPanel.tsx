@@ -8,7 +8,7 @@ interface DayPanelProps {
   isActive: boolean;
   exercises: Exercise[];
   workout: Record<string, ExerciseState>;
-  onToggleDone: (day: DayType, exId: string) => void;
+  onCycleStatus: (day: DayType, exId: string) => void;
   onUpdateSet: (
     day: DayType,
     exId: string,
@@ -27,14 +27,16 @@ export default function DayPanel({
   isActive,
   exercises,
   workout,
-  onToggleDone,
+  onCycleStatus,
   onUpdateSet,
   onUpdateNotes,
   onReset,
   onSave,
   onEditPlan,
 }: DayPanelProps) {
-  const doneCount = exercises.filter((ex) => workout[ex.id]?.done).length;
+  const doneCount = exercises.filter(
+    (ex) => workout[ex.id]?.status === "done",
+  ).length;
   const [saved, setSaved] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
 
@@ -74,7 +76,7 @@ export default function DayPanel({
           exId={ex.id}
           exercise={ex}
           exState={workout[ex.id]}
-          onToggleDone={onToggleDone}
+          onCycleStatus={onCycleStatus}
           onUpdateSet={onUpdateSet}
           onUpdateNotes={onUpdateNotes}
         />
