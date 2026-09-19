@@ -2,7 +2,10 @@ export type WorkoutSet = {
   kg: string;
   reps: string;
   note: string;
+  done: boolean;
 };
+
+export type SetField = "kg" | "reps" | "note";
 
 export type DayType = "push" | "pull" | "legs";
 
@@ -33,3 +36,18 @@ export type Plan = Record<DayType, Exercise[]>;
 export type WorkoutState = Record<DayType, Record<string, ExerciseState>>;
 
 export type Schedule = Partial<Record<number, DayType>>;
+
+export type BodyEntry = {
+  date: string;
+  weightKg: string;
+  waistCm: string;
+  calories: string;
+  note: string;
+};
+
+export type BodyLog = Record<string, BodyEntry>;
+
+export type BodyPhoto = {
+  id: string;
+  date: string;
+};

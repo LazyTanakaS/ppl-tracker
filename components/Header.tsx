@@ -1,127 +1,94 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { downloadBackup, importBackup } from "@/lib/storage";
+import { useSyncExternalStore } from "react";
+import { usePwa } from "@/hooks/usePwa";
+
 interface HeaderProps {
-  onScheduleOpen: () => void;
+  onSettingsOpen: () => void;
 }
 
-export default function Header({ onScheduleOpen }: HeaderProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [importStatus, setImportStatus] = useState<"idle" | "error">("idle");
+const DAYS = [
+  "SUNDAY",
+  "MONDAY",
+  "TUESDAY",
+  "WEDNESDAY",
+  "THURSDAY",
+  "FRIDAY",
+  "SATURDAY",
+];
+const MONTHS = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC",
+];
 
+function subscribeToClock(onChange: () => void) {
+  const id = setInterval(onChange, 60_000);
+  document.addEventListener("visibilitychange", onChange);
+  return () => {
+    clearInterval(id);
+    document.removeEventListener("visibilitychange", onChange);
+  };
+}
+
+function todayLabel(): string {
   const now = new Date();
-  const days = [
-    "SUNDAY",
-    "MONDAY",
-    "TUESDAY",
-    "WEDNESDAY",
-    "THURSDAY",
-    "FRIDAY",
-    "SATURDAY",
-  ];
-  const month = [
-    "JAN",
-    "FEB",
-    "MAR",
-    "APR",
-    "MAY",
-    "JUN",
-    "JUL",
-    "AUG",
-    "SEP",
-    "OCT",
-    "NOV",
-    "DEC",
-  ];
+  return `${DAYS[now.getDay()]}|${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+}
 
-  const dayName = days[now.getDay()];
-  const date = now.getDate();
-  const monthName = month[now.getMonth()];
-  const year = now.getFullYear();
-
-  function handleImportClick() {
-    fileInputRef.current?.click();
-  }
-
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const text = reader.result;
-      const ok = typeof text === "string" && importBackup(text);
-      if (ok) {
-        window.location.reload();
-      } else {
-        setImportStatus("error");
-        setTimeout(() => setImportStatus("idle"), 3000);
-      }
-    };
-
-    reader.onerror = () => {
-      setImportStatus("error");
-      setTimeout(() => setImportStatus("idle"), 3000);
-    };
-    reader.readAsText(file);
-  }
+export default function Header({ onSettingsOpen }: HeaderProps) {
+  const today = useSyncExternalStore(subscribeToClock, todayLabel, () => "");
+  const [dayName, dateText] = today.split("|");
+  const { online } = usePwa();
 
   return (
-    <header style={{ position: "relative" }}>
+    <header>
       <div className="logo">
         PPL<span>.</span>
       </div>
 
-      <div style={{ display: "flex", alignItems: "flex-end", gap: "16px" }}>
+      <div className="header-actions">
+        {!online && (
+          <span className="offline-pill" role="status">
+            Offline · saved on this device
+          </span>
+        )}
         <button
-          className="schedule-open-btn"
-          onClick={downloadBackup}
-          title="Export backup JSON"
+          className="icon-btn"
+          onClick={onSettingsOpen}
+          aria-label="Settings"
+          title="Settings"
         >
-          ⬇
+          <svg
+            viewBox="0 0 24 24"
+            width="22"
+            height="22"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
+          </svg>
         </button>
-
-        <button
-          className="schedule-open-btn"
-          onClick={handleImportClick}
-          title="Import backup (JSON)"
-        >
-          ⬆
-        </button>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="application/json"
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-        />
-
-        <button className="schedule-open-btn" onClick={onScheduleOpen}>
-          ☰
-        </button>
-
-        <div className="date-display">
-          {dayName} <br />
-          {date} {monthName} {year}
-        </div>
       </div>
 
-      {importStatus === "error" && (
-        <div
-          style={{
-            position: "absolute",
-            top: "100%",
-            right: 0,
-            fontSize: "11px",
-            color: "#e05555",
-            marginTop: "4px",
-          }}
-        >
-          Import failed — file is not a valid backup
-        </div>
-      )}
+      <div className="date-display">
+        {dayName || " "} <br />
+        {dateText || " "}
+      </div>
     </header>
   );
 }

@@ -1,7 +1,14 @@
-import { useState } from "react";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import type { Plan, DayType, Exercise } from "@/types";
 import { PLAN as DEFAULT_PLAN } from "@/data/plan";
-import { safeGet, safeSet, STORAGE_KEYS } from "@/lib/storage";
+import {
+  loadPlan,
+  onStorageChange,
+  safeSet,
+  STORAGE_KEYS,
+} from "@/lib/storage";
 
 function generateId(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -11,33 +18,59 @@ function generateId(): string {
 }
 
 export function usePlan() {
-  const [plan, setPlan] = useState<Plan>(() =>
-    safeGet(STORAGE_KEYS.plan, DEFAULT_PLAN),
+  const [plan, setPlan] = useState<Plan>(loadPlan);
+  const loadedPlan = useRef(plan);
+
+  useEffect(() => {
+    if (plan === loadedPlan.current) return;
+    safeSet(STORAGE_KEYS.plan, plan);
+  }, [plan]);
+
+  useEffect(
+    () =>
+      onStorageChange(STORAGE_KEYS.plan, () => {
+        const fresh = loadPlan();
+        loadedPlan.current = fresh;
+        setPlan(fresh);
+      }),
+    [],
   );
 
-  function save(updated: Plan) {
-    setPlan(updated);
-    safeSet(STORAGE_KEYS.plan, updated);
-  }
-
   function addExercise(day: DayType, exercise: Omit<Exercise, "id">) {
-    save({ ...plan, [day]: [...plan[day], { ...exercise, id: generateId() }] });
+    setPlan((prev) => ({
+      ...prev,
+      [day]: [...prev[day], { ...exercise, id: generateId() }],
+    }));
   }
 
   function removeExercise(day: DayType, id: string) {
-    save({ ...plan, [day]: plan[day].filter((ex) => ex.id !== id) });
+    setPlan((prev) => ({
+      ...prev,
+      [day]: prev[day].filter((ex) => ex.id !== id),
+    }));
   }
 
   function updateExercise(day: DayType, id: string, exercise: Exercise) {
-    save({
-      ...plan,
-      [day]: plan[day].map((ex) => (ex.id === id ? exercise : ex)),
-    });
+    setPlan((prev) => ({
+      ...prev,
+      [day]: prev[day].map((ex) => (ex.id === id ? exercise : ex)),
+    }));
   }
 
   function resetDay(day: DayType) {
-    save({ ...plan, [day]: DEFAULT_PLAN[day] });
+    setPlan((prev) => ({ ...prev, [day]: DEFAULT_PLAN[day] }));
   }
 
-  return { plan, addExercise, removeExercise, updateExercise, resetDay };
+  function replacePlan(next: Plan) {
+    setPlan(next);
+  }
+
+  return {
+    plan,
+    addExercise,
+    removeExercise,
+    updateExercise,
+    resetDay,
+    replacePlan,
+  };
 }

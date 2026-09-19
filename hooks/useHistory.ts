@@ -1,42 +1,43 @@
-import { useState } from "react";
-import type {
-  History,
-  WorkoutSession,
-  DayType,
-  ExerciseState,
-  Exercise,
-} from "@/types";
-import { safeGet, safeSet, STORAGE_KEYS } from "@/lib/storage";
+"use client";
+
+import { useEffect, useState } from "react";
+import type { History, WorkoutSession } from "@/types";
+import {
+  loadHistory,
+  onStorageChange,
+  safeSet,
+  STORAGE_KEYS,
+} from "@/lib/storage";
 
 export function useHistory() {
-  const [history, setHistory] = useState<History>(() =>
-    safeGet<History>(STORAGE_KEYS.history, []),
+  const [history, setHistory] = useState<History>(loadHistory);
+
+  useEffect(
+    () =>
+      onStorageChange(STORAGE_KEYS.history, () => setHistory(loadHistory())),
+    [],
   );
 
-  const MAX_HISTORY = 500;
-
-  function saveSession(
-    day: DayType,
-    exercises: Exercise[],
-    workout: Record<string, ExerciseState>,
-  ): boolean {
-    const session: WorkoutSession = {
-      date: new Date().toISOString(),
-      day,
-      exercises,
-      workout,
-    };
-    const updated = [session, ...history].slice(0, MAX_HISTORY);
+  function saveSession(session: WorkoutSession): boolean {
+    const updated = [session, ...loadHistory()];
     const ok = safeSet(STORAGE_KEYS.history, updated);
-
     if (ok) setHistory(updated);
     return ok;
   }
 
-  function deleteSession(index: number) {
-    const updated = history.filter((_, i) => i !== index);
+  function deleteSession(session: WorkoutSession): boolean {
+    const stored = loadHistory();
+    const index = stored.findIndex(
+      (item) => item.date === session.date && item.day === session.day,
+    );
+    if (index === -1) {
+      setHistory(stored);
+      return true;
+    }
+    const updated = stored.filter((_, i) => i !== index);
     const ok = safeSet(STORAGE_KEYS.history, updated);
     if (ok) setHistory(updated);
+    return ok;
   }
 
   return { history, saveSession, deleteSession };

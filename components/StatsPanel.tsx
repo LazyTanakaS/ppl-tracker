@@ -1,134 +1,199 @@
 "use client";
 
-import { useState } from "react";
-import type { Plan, History, DayType, Exercise } from "@/types";
+import { useMemo, useState } from "react";
+import type { History, Plan, Schedule } from "@/types";
+import { DAYS } from "@/lib/days";
 import {
-  findPersonalRecord,
-  calculateWeeklyVolume,
+  buildChart,
+  collectExercises,
+  computeStats,
+  getExerciseMetrics,
   getExerciseProgress,
+  type DayFilter,
+  type ProgressMetric,
+  type StatsPeriod,
 } from "@/lib/stats";
+import {
+  adherence,
+  computeProgress,
+  daysSinceLastSession,
+  progressHeadline,
+  weeklySessions,
+} from "@/lib/progress";
+import type { Unit } from "@/lib/settings";
+import { sectionPanelId, sectionTabId } from "./MainNav";
+import ProgressSection from "./ProgressSection";
+import ExerciseDetail from "./ExerciseDetail";
+import ConsistencySection from "./ConsistencySection";
 
 interface StatsPanelProps {
   plan: Plan;
   history: History;
+  schedule: Schedule;
+  unit: Unit;
+  onStartWorkout: () => void;
+  onOpenSettings: () => void;
 }
 
-type ExerciseWithDay = Exercise & { day: DayType };
+const PERIODS: { value: StatsPeriod; label: string }[] = [
+  { value: 7, label: "7 days" },
+  { value: 30, label: "30 days" },
+  { value: 90, label: "3 months" },
+  { value: "all", label: "All time" },
+];
 
-const DAY_COLORS: Record<DayType, string> = {
-  push: "var(--accent-push)",
-  pull: "var(--accent-pull)",
-  legs: "var(--accent-legs)",
-};
+const CHART_POINTS = 20;
+const parsePeriod = (value: string): StatsPeriod =>
+  value === "all" ? "all" : (Number(value) as StatsPeriod);
 
-export default function StatsPanel({ plan, history }: StatsPanelProps) {
-  const allExercises: ExerciseWithDay[] = (
-    ["push", "pull", "legs"] as DayType[]
-  ).flatMap((day) => plan[day].map((ex) => ({ ...ex, day })));
+export default function StatsPanel({
+  plan,
+  history,
+  schedule,
+  unit,
+  onStartWorkout,
+  onOpenSettings,
+}: StatsPanelProps) {
+  const [now] = useState(() => Date.now());
+  const [period, setPeriod] = useState<StatsPeriod>(30);
+  const [dayFilter, setDayFilter] = useState<DayFilter>("all");
+  const [query, setQuery] = useState("");
+  const [selectedId, setSelectedId] = useState("");
+  const [metric, setMetric] = useState<ProgressMetric>("maxKg");
 
-  const [selectedId, setSelectedId] = useState<string>(
-    allExercises[0]?.id ?? "",
+  const stats = useMemo(
+    () => computeStats({ plan, history, period, dayFilter, query, now }),
+    [plan, history, period, dayFilter, query, now],
+  );
+  const report = useMemo(
+    () => computeProgress({ plan, history, period, dayFilter, now }),
+    [plan, history, period, dayFilter, now],
+  );
+  const options = useMemo(
+    () =>
+      collectExercises(plan, history).filter(
+        (e) => dayFilter === "all" || e.day === dayFilter,
+      ),
+    [plan, history, dayFilter],
+  );
+  const withData = new Set(
+    report.entries
+      .filter((e) => e.trend.sessions > 0)
+      .map((e) => e.exercise.id),
+  );
+  const activeId = options.some((o) => o.id === selectedId)
+    ? selectedId
+    : ((options.find((o) => withData.has(o.id)) ?? options[0])?.id ?? "");
+
+  const progress = useMemo(
+    () =>
+      getExerciseProgress(stats.periodChronological, activeId).slice(
+        -CHART_POINTS,
+      ),
+    [stats.periodChronological, activeId],
+  );
+  const chart = buildChart(progress, metric);
+  const best = useMemo(
+    () => getExerciseMetrics(stats.periodChronological, activeId),
+    [stats.periodChronological, activeId],
+  );
+  const weeks = useMemo(() => weeklySessions(history, now, 8), [history, now]);
+  const adherenceResult = useMemo(
+    () => adherence(schedule, history, now),
+    [schedule, history, now],
   );
 
-  const WeeklyVolume = calculateWeeklyVolume(history).slice(-8);
-  const maxVolume = Math.max(1, ...WeeklyVolume.map((w) => w.volume));
+  const panelProps = {
+    id: sectionPanelId("stats"),
+    role: "tabpanel" as const,
+    "aria-labelledby": sectionTabId("stats"),
+  };
 
-  const progress = getExerciseProgress(history, selectedId);
-  const maxProgressKg = Math.max(1, ...progress.map((p) => p.maxKg));
-
-  if (history.length === 0) {
+  if (!stats.hasHistory) {
     return (
-      <div className="history-empty"> No data yet - save a session first</div>
+      <div {...panelProps} className="empty-state">
+        <p>
+          Your progress will show up here after you save your first workout.
+        </p>
+        <button type="button" className="primary-btn" onClick={onStartWorkout}>
+          Start a workout
+        </button>
+      </div>
     );
   }
 
+  function selectExercise(id: string) {
+    setSelectedId(id);
+    document.getElementById("stats-detail")?.scrollIntoView({ block: "start" });
+  }
+
   return (
-    <div className="stats-panel">
-      <section className="stats-section">
-        <h3 className="stats-heading">Personal Records</h3>
-        <div className="stats-pr-list">
-          {allExercises.map((ex) => {
-            const pr = findPersonalRecord(history, ex.id);
-            return (
-              <div key={ex.id} className="stats-pr-row">
-                <span
-                  className="stats-pr-day-dot"
-                  style={{ background: DAY_COLORS[ex.day] }}
-                />
-                <span className="stats-pr-name">{ex.name}</span>
-                <span className="stats-pr-value">
-                  {pr ? `${pr.kg}kg × ${pr.reps}` : "-"}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="stats-section">
-        <h3 className="stats-heading">Weekly Volume</h3>
-        <div className="stats-bar-list">
-          {WeeklyVolume.length === 0 && (
-            <div className="stats-empty">Not enough data yet</div>
-          )}
-          {WeeklyVolume.map((w) => (
-            <div key={w.weekStart} className="stats-bar-row">
-              <span className="stats-bar-label">{w.weekStart}</span>
-              <div className="stats-bar-track">
-                <div
-                  className="stats-bar-fill"
-                  style={{ width: `${(w.volume / maxVolume) * 100}% ` }}
-                ></div>
-              </div>
-              <span className="stats-bar-value">
-                {Math.round(w.volume).toLocaleString()} kg
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="stats-section">
-        <h3 className="stats-heading">Exercise Progress</h3>
-        <select
-          className="stats-select"
-          value={selectedId}
-          onChange={(e) => setSelectedId(e.target.value)}
+    <div {...panelProps} className="stats-panel">
+      <div className="stats-toolbar">
+        <label className="stats-field">
+          <span className="stats-field-label">Period</span>
+          <select
+            className="stats-period-select"
+            value={String(period)}
+            onChange={(e) => setPeriod(parsePeriod(e.target.value))}
+          >
+            {PERIODS.map(({ value, label }) => (
+              <option key={value} value={String(value)}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div
+          className="stats-filter-row"
+          role="group"
+          aria-label="Filter by workout type"
         >
-          {allExercises.map((ex) => (
-            <option key={ex.id} value={ex.id}>
-              {ex.name}
-            </option>
-          ))}
-        </select>
-
-        <div className="stats-bar-list">
-          {progress.length === 0 && (
-            <div className="stats-empty">
-              No sets logged for this exercise yet
-            </div>
-          )}
-          {progress.map((p) => (
-            <div key={p.date} className="stats-bar-row">
-              <span className="stats-bar-label">
-                {new Date(p.date).toLocaleDateString("en-US", {
-                  day: "numeric",
-                  month: "short",
-                })}
-              </span>
-              <div className="stats-bar-track">
-                <div
-                  className="stats-bar-fill"
-                  style={{ width: `${(p.maxKg / maxProgressKg) * 100}%` }}
-                ></div>
-              </div>
-              <span className="stats-bar-value">
-                {p.maxKg}kg (~{p.estimated1RM} 1RM)
-              </span>
-            </div>
+          {(["all", ...DAYS] as DayFilter[]).map((filter) => (
+            <button
+              key={filter}
+              type="button"
+              className={`stats-filter-btn ${dayFilter === filter ? "active" : ""}`}
+              aria-pressed={dayFilter === filter}
+              onClick={() => setDayFilter(filter)}
+            >
+              {filter.toUpperCase()}
+            </button>
           ))}
         </div>
-      </section>
+      </div>
+
+      <ProgressSection
+        report={report}
+        headline={progressHeadline(report)}
+        onSelect={selectExercise}
+      />
+
+      <ExerciseDetail
+        unit={unit}
+        options={options}
+        activeId={activeId}
+        onSelect={setSelectedId}
+        metric={metric}
+        onMetric={setMetric}
+        chart={chart}
+        hasSessions={progress.length > 0}
+        best={best}
+        rows={stats.rows}
+        query={query}
+        onQuery={setQuery}
+        chartPoints={CHART_POINTS}
+      />
+
+      <ConsistencySection
+        schedule={schedule}
+        adherence={adherenceResult}
+        weeks={weeks}
+        daysSince={daysSinceLastSession(history, now)}
+        streak={stats.weekStreak}
+        calendar={stats.calendar}
+        onOpenSettings={onOpenSettings}
+      />
     </div>
   );
 }

@@ -7,7 +7,7 @@ interface ProgressBarProps {
 }
 
 export default function ProgressBar({ day, done, total }: ProgressBarProps) {
-  const pct = Math.round((done / total) * 100);
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
 
   return (
     <div className={`progress-wrap ${day}`}>
@@ -18,7 +18,14 @@ export default function ProgressBar({ day, done, total }: ProgressBarProps) {
         </span>
       </div>
 
-      <div className="progress-bar">
+      <div
+        className="progress-bar"
+        role="progressbar"
+        aria-label={`${day} exercises done`}
+        aria-valuemin={0}
+        aria-valuemax={total}
+        aria-valuenow={done}
+      >
         <div className="progress-fill" style={{ width: `${pct}%` }}></div>
       </div>
     </div>
